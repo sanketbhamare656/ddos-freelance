@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDoS Detection | Traffic Analyzer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.1), transparent);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .bg-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+
+        .bg-circle:nth-child(2) {
+            width: 500px;
+            height: 500px;
+            bottom: -250px;
+            right: -250px;
+            animation-delay: 5s;
+        }
+
+        .bg-circle:nth-child(3) {
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            left: 50%;
+            animation-delay: 10s;
+        }
+
+        .bg-circle:nth-child(4) {
+            width: 400px;
+            height: 400px;
+            top: 20%;
+            right: -200px;
+            animation-delay: 3s;
+        }
+
+        .bg-circle:nth-child(5) {
+            width: 250px;
+            height: 250px;
+            bottom: 20%;
+            left: -125px;
+            animation-delay: 7s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(50px, 50px) scale(1.1);
+            }
+            50% {
+                transform: translate(-50px, 100px) scale(0.9);
+            }
+            75% {
+                transform: translate(100px, -50px) scale(1.05);
+            }
+        }
+
+        /* Particles */
+        .particle {
+            position: absolute;
+            background: rgba(0, 255, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFloat 10s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Navbar */
+        .navbar {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ffff, #ff6b6b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .logo::before {
+            content: '🛡️';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            background: none;
+            -webkit-text-fill-color: initial;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00ffff, #ff6b6b);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::before,
+        .nav-links a.active::before {
+            width: 80%;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(0, 255, 255, 0.1);
+            color: #00ffff;
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 5;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Page Title */
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .page-title h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #00ffff, #ff6b6b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Detection Container */
+        .detection-container {
+            display: flex;
+            gap: 2rem;
+            min-height: 600px;
+            flex-wrap: wrap;
+        }
+        
+        .input-panel {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            animation: fadeInUp 0.8s ease;
+            animation-delay: 0.1s;
+            animation-fill-mode: both;
+        }
+        
+        .output-panel {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            animation: fadeInUp 0.8s ease;
+            animation-delay: 0.2s;
+            animation-fill-mode: both;
+        }
+        
+        .panel-title {
+            font-size: 1.5rem;
+            color: #00ffff;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        /* Loading Bar Styles */
+        .loading-container {
+            display: none;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .loading-bar-wrapper {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            height: 30px;
+            margin: 1rem 0;
+        }
+        
+        .loading-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #0099ff, #00ffff);
+            border-radius: 10px;
+            transition: width 0.1s linear;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .loading-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .loading-text {
+            color: #00ffff;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .loading-percent {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #00ffff;
+        }
+        
+        /* Input Fields Styling */
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #00ffff;
+        }
+        
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            color: #eee;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+        
+        /* Quick Test Buttons */
+        .quick-tests {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        .quick-tests label {
+            color: #00ffff;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .quick-test-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        
+        .quick-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .quick-btn:hover {
+            background: rgba(0, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.2);
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            z-index: -1;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ffff, #0099ff);
+            color: #1a1a2e;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+        }
+        
+        .detect-button {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+        
+        /* Output Styles */
+        .output-placeholder {
+            text-align: center;
+            padding: 3rem;
+            color: #888;
+        }
+        
+        .result-card {
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .severity-badge {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+        
+        .score-circle {
+            width: 100px;
+            height: 100px;
+            margin: 1rem auto;
+            position: relative;
+        }
+        
+        .score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .reason-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+        
+        .reason-list li {
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .recommendation-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+        
+        .recommendation-list li {
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            border-left: 3px solid #00ffff;
+        }
+        
+        /* Footer */
+        .footer {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            margin-top: 3rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .footer p {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title h1 {
+                font-size: 1.8rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .detection-container {
+                flex-direction: column;
+            }
+            
+            .input-panel, .output-panel {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+    </div>
+
+    <!-- Particles -->
+    <div id="particles"></div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">DDoSShield</div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/detect" class="active">Detection</a></li>
+                <li><a href="/history">History</a></li>
+                <li><a href="/about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-title">
+            <h1><i class="fas fa-chart-line"></i> Real-Time Traffic Detection</h1>
+            <p>Advanced DDoS attack detection using intelligent rule-based algorithms</p>
+        </div>
+        
+        <div class="detection-container">
+            <!-- LEFT PANEL - INPUTS -->
+            <div class="input-panel">
+                <div class="panel-title">
+                    <i class="fas fa-sliders-h"></i> Network Traffic Inputs
+                </div>
+                
+                <form id="detectionForm">
+                    <div class="input-group">
+                        <label><i class="fas fa-box"></i> Packet Rate (packets/sec)</label>
+                        <input type="number" id="packetRate" step="any" required placeholder="e.g., 120" value="120">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label><i class="fas fa-database"></i> Byte Rate (bytes/sec)</label>
+                        <input type="number" id="byteRate" step="any" required placeholder="e.g., 300" value="300">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label><i class="fas fa-network-wired"></i> Connection Count</label>
+                        <input type="number" id="connectionCount" step="any" required placeholder="e.g., 10" value="10">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label><i class="fas fa-flag"></i> SYN Flag</label>
+                        <select id="synFlag">
+                            <option value="1">1 (Set) - Synchronize</option>
+                            <option value="0">0 (Not Set)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label><i class="fas fa-check-circle"></i> ACK Flag</label>
+                        <select id="ackFlag">
+                            <option value="1">1 (Set) - Acknowledgment</option>
+                            <option value="0">0 (Not Set)</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary detect-button">
+                        <i class="fas fa-rocket"></i> Analyze Traffic
+                    </button>
+                </form>
+                
+                <!-- Quick Test Buttons -->
+                <div class="quick-tests">
+                    <label><i class="fas fa-bolt"></i> Quick Test Scenarios</label>
+                    <div class="quick-test-buttons">
+                        <button type="button" class="quick-btn" onclick="loadTest('normal')">
+                            <i class="fas fa-check-circle"></i> Normal
+                        </button>
+                        <button type="button" class="quick-btn" onclick="loadTest('warning')">
+                            <i class="fas fa-exclamation-triangle"></i> Warning
+                        </button>
+                        <button type="button" class="quick-btn" onclick="loadTest('attack')">
+                            <i class="fas fa-skull-crossbones"></i> DDoS Attack
+                        </button>
+                        <button type="button" class="quick-btn" onclick="loadTest('critical')">
+                            <i class="fas fa-fire"></i> Critical Attack
+                        </button>
+                        <button type="button" class="quick-btn" onclick="loadTest('syn_flood')">
+                            <i class="fas fa-water"></i> SYN Flood
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- RIGHT PANEL - OUTPUT -->
+            <div class="output-panel">
+                <div class="panel-title">
+                    <i class="fas fa-shield-alt"></i> Detection Result
+                </div>
+                
+                <!-- Loading Bar Container -->
+                <div class="loading-container" id="loadingContainer">
+                    <div class="loading-bar-wrapper">
+                        <div class="loading-bar" id="loadingBar"></div>
+                    </div>
+                    <div class="loading-text">
+                        <i class="fas fa-spinner fa-spin"></i> Analyzing Network Traffic... 
+                        <span class="loading-percent" id="loadingPercent">0%</span>
+                    </div>
+                </div>
+                
+                <!-- Result Container -->
+                <div id="resultContainer" style="flex: 1;">
+                    <div class="output-placeholder">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <p>👋 Welcome to DDoS Detection System</p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Enter traffic parameters and click <strong style="color: #00ffff;">"Analyze Traffic"</strong> to start detection</p>
+                        <p style="font-size: 0.85rem; margin-top: 1rem; color: rgba(255,255,255,0.4);">
+                            <i class="fas fa-info-circle"></i> The system will analyze packet rate, byte rate,<br>
+                            connection count, and TCP flags to detect DDoS attacks.
+                        </p>
+                        <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(0,255,255,0.05); border-radius: 10px;">
+                            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">
+                                <i class="fas fa-lightbulb"></i> <strong>Quick Tip:</strong> Use the "Quick Test Scenarios" buttons above to test different attack patterns!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2024 DDoS Detection System | Powered by Advanced Rule-Based Algorithms | Real-time Protection</p>
+    </footer>
+
+    <script>
+        // Create particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 5 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = Math.random() * 10 + 5 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Test scenarios data
+        const testScenarios = {
+            normal: {
+                name: "Normal Traffic",
+                packet: 120,
+                byte: 300,
+                conn: 10,
+                syn: 1,
+                ack: 1
+            },
+            warning: {
+                name: "Warning Level",
+                packet: 600,
+                byte: 1200,
+                conn: 60,
+                syn: 1,
+                ack: 1
+            },
+            attack: {
+                name: "DDoS Attack",
+                packet: 6000,
+                byte: 9000,
+                conn: 300,
+                syn: 1,
+                ack: 0
+            },
+            critical: {
+                name: "Critical Attack",
+                packet: 15000,
+                byte: 20000,
+                conn: 800,
+                syn: 1,
+                ack: 0
+            },
+            syn_flood: {
+                name: "SYN Flood",
+                packet: 8000,
+                byte: 10000,
+                conn: 500,
+                syn: 1,
+                ack: 0
+            }
+        };
+        
+        function loadTest(type) {
+            const scenario = testScenarios[type];
+            if (scenario) {
+                document.getElementById('packetRate').value = scenario.packet;
+                document.getElementById('byteRate').value = scenario.byte;
+                document.getElementById('connectionCount').value = scenario.conn;
+                document.getElementById('synFlag').value = scenario.syn;
+                document.getElementById('ackFlag').value = scenario.ack;
+                
+                // Add button highlight effect
+                const btns = document.querySelectorAll('.quick-btn');
+                btns.forEach(btn => btn.style.transform = 'scale(0.95)');
+                setTimeout(() => {
+                    btns.forEach(btn => btn.style.transform = '');
+                }, 200);
+                
+                // Show a notification that values are loaded
+                const resultContainer = document.getElementById('resultContainer');
+                resultContainer.innerHTML = `
+                    <div class="output-placeholder">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">
+                            <i class="fas fa-check-circle" style="color: #00ff88;"></i>
+                        </div>
+                        <p>✅ Test scenario <strong style="color: #00ffff;">"${scenario.name}"</strong> loaded!</p>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem;">Click <strong style="color: #00ffff;">"Analyze Traffic"</strong> to run detection</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Loading animation function
+        async function showLoading() {
+            const loadingContainer = document.getElementById('loadingContainer');
+            const loadingBar = document.getElementById('loadingBar');
+            const loadingPercent = document.getElementById('loadingPercent');
+            const resultContainer = document.getElementById('resultContainer');
+            
+            // Hide result, show loading
+            resultContainer.style.opacity = '0.3';
+            loadingContainer.style.display = 'block';
+            
+            let percent = 0;
+            const duration = 5000;
+            const interval = 50;
+            const step = (interval / duration) * 100;
+            
+            return new Promise((resolve) => {
+                const intervalId = setInterval(() => {
+                    percent += step;
+                    if (percent >= 100) {
+                        percent = 100;
+                        loadingBar.style.width = '100%';
+                        loadingPercent.textContent = '100%';
+                        clearInterval(intervalId);
+                        setTimeout(() => {
+                            loadingContainer.style.display = 'none';
+                            resultContainer.style.opacity = '1';
+                            resolve();
+                        }, 200);
+                    } else {
+                        loadingBar.style.width = percent + '%';
+                        loadingPercent.textContent = Math.floor(percent) + '%';
+                    }
+                }, interval);
+            });
+        }
+        
+        // Display result function
+        function displayResult(analysis, recommendations) {
+            const container = document.getElementById('resultContainer');
+            const severity = analysis.severity;
+            
+            let icon = '✅';
+            let title = 'Normal Traffic';
+            let borderColor = '#00ff88';
+            
+            if (severity === 'Critical') {
+                icon = '🔥 🚨 🔥';
+                title = 'CRITICAL DDoS ATTACK!';
+                borderColor = '#ff4444';
+            } else if (severity === 'Attack') {
+                icon = '⚠️ 🚨 ⚠️';
+                title = 'DDoS ATTACK DETECTED!';
+                borderColor = '#ff6b6b';
+            } else if (severity === 'Warning') {
+                icon = '⚠️';
+                title = 'Warning: Suspicious Activity';
+                borderColor = '#ffcc00';
+            }
+            
+            let scoreColor = '#00ff88';
+            if (analysis.score >= 70) scoreColor = '#ff4444';
+            else if (analysis.score >= 50) scoreColor = '#ff8800';
+            else if (analysis.score >= 30) scoreColor = '#ffcc00';
+            
+            const reasonsHtml = analysis.reasons.map(reason => `<li><i class="fas fa-search"></i> ${reason}</li>`).join('');
+            
+            container.innerHTML = `
+                <div class="result-card" style="animation: slideIn 0.5s ease;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem;">${icon}</div>
+                        <h2 style="color: ${borderColor}; margin: 0.5rem 0;">${title}</h2>
+                        <span class="severity-badge" style="background: ${borderColor}20; color: ${borderColor}; border: 1px solid ${borderColor};">
+                            <i class="fas fa-tag"></i> Severity: ${severity}
+                        </span>
+                    </div>
+                    
+                    <div class="score-circle" style="text-align: center;">
+                        <svg width="100" height="100" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" fill="none" stroke="#333" stroke-width="8"/>
+                            <circle cx="50" cy="50" r="45" fill="none" stroke="${scoreColor}" stroke-width="8"
+                                    stroke-dasharray="${2 * Math.PI * 45}" stroke-dashoffset="${2 * Math.PI * 45 * (1 - analysis.confidence / 100)}"
+                                    transform="rotate(-90 50 50)"/>
+                        </svg>
+                        <div class="score-text" style="color: ${scoreColor}">
+                            ${analysis.confidence}%
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 0.5rem 0;">
+                        <p><strong><i class="fas fa-chart-simple"></i> Threat Score:</strong> 
+                            <span style="color: ${scoreColor}; font-size: 1.2rem; font-weight: bold;">${analysis.score}/100</span>
+                        </p>
+                    </div>
+                    
+                    ${analysis.reasons.length > 0 ? `
+                        <div style="margin-top: 1rem;">
+                            <h4 style="color: #00ffff;"><i class="fas fa-list"></i> Detection Reasons:</h4>
+                            <ul class="reason-list">${reasonsHtml}</ul>
+                        </div>
+                    ` : ''}
+                    
+                    <div style="margin-top: 1rem;">
+                        <h4 style="color: #00ffff;"><i class="fas fa-shield-virus"></i> Recommended Actions:</h4>
+                        <ul class="recommendation-list">
+                            ${recommendations.map(rec => `<li><i class="fas fa-arrow-right"></i> ${rec}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Handle form submission
+        document.getElementById('detectionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                packet_rate: parseFloat(document.getElementById('packetRate').value),
+                byte_rate: parseFloat(document.getElementById('byteRate').value),
+                connection_count: parseFloat(document.getElementById('connectionCount').value),
+                syn_flag: parseInt(document.getElementById('synFlag').value),
+                ack_flag: parseInt(document.getElementById('ackFlag').value)
+            };
+            
+            const submitBtn = document.querySelector('.detect-button');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+            
+            await showLoading();
+            
+            try {
+                const response = await fetch('/api/detect', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayResult(result.analysis, result.recommendations);
+                } else {
+                    document.getElementById('resultContainer').innerHTML = `
+                        <div class="output-placeholder">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fas fa-exclamation-triangle"></i></div>
+                            <p>Error: ${result.error}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('resultContainer').innerHTML = `
+                    <div class="output-placeholder">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fas fa-bug"></i></div>
+                        <p>Detection failed: ${error.message}</p>
+                    </div>
+                `;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-rocket"></i> Analyze Traffic';
+            }
+        });
+        
+        // Add hover effect to panels
+        document.querySelectorAll('.input-panel, .output-panel').forEach(panel => {
+            panel.addEventListener('mousemove', (e) => {
+                const rect = panel.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                panel.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(0, 255, 255, 0.1), rgba(255, 255, 255, 0.03))`;
+            });
+            
+            panel.addEventListener('mouseleave', () => {
+                panel.style.background = '';
+            });
+        });
+        
+        // Initialize particles only - NO AUTO DETECTION
+        createParticles();
+        
+        // REMOVED: setTimeout(() => { loadTest('normal'); }, 500);
+        // Now page loads with empty state only, user must click button
+    </script>
+</body>
+</html>

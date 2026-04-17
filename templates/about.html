@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDoS Detection | About</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.1), transparent);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .bg-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+
+        .bg-circle:nth-child(2) {
+            width: 500px;
+            height: 500px;
+            bottom: -250px;
+            right: -250px;
+            animation-delay: 5s;
+        }
+
+        .bg-circle:nth-child(3) {
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            left: 50%;
+            animation-delay: 10s;
+        }
+
+        .bg-circle:nth-child(4) {
+            width: 400px;
+            height: 400px;
+            top: 20%;
+            right: -200px;
+            animation-delay: 3s;
+        }
+
+        .bg-circle:nth-child(5) {
+            width: 250px;
+            height: 250px;
+            bottom: 20%;
+            left: -125px;
+            animation-delay: 7s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(50px, 50px) scale(1.1);
+            }
+            50% {
+                transform: translate(-50px, 100px) scale(0.9);
+            }
+            75% {
+                transform: translate(100px, -50px) scale(1.05);
+            }
+        }
+
+        /* Particles */
+        .particle {
+            position: absolute;
+            background: rgba(0, 255, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFloat 10s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Navbar */
+        .navbar {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ffff, #ff6b6b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .logo::before {
+            content: '🛡️';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            background: none;
+            -webkit-text-fill-color: initial;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00ffff, #ff6b6b);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::before,
+        .nav-links a.active::before {
+            width: 80%;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(0, 255, 255, 0.1);
+            color: #00ffff;
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 5;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            animation: fadeInUp 0.8s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.1), transparent);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #00ffff, #ff6b6b, #00ffff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            z-index: -1;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ffff, #0099ff);
+            color: #1a1a2e;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+        }
+
+        /* Cards */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease;
+            animation-fill-mode: both;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(0, 255, 255, 0.6);
+            box-shadow: 0 20px 40px rgba(0, 255, 255, 0.2);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .card h3 {
+            color: #00ffff;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .card p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 107, 107, 0.1));
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease;
+            animation-fill-mode: both;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.4s; }
+        .stat-card:nth-child(2) { animation-delay: 0.5s; }
+        .stat-card:nth-child(3) { animation-delay: 0.6s; }
+        .stat-card:nth-child(4) { animation-delay: 0.7s; }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #00ffff;
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ffff, #ff6b6b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* Info Sections */
+        .info-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            animation: fadeInUp 0.8s ease;
+            animation-delay: 0.8s;
+            animation-fill-mode: both;
+        }
+
+        .info-section h2 {
+            color: #00ffff;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .severity-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .severity-list li {
+            padding: 1rem;
+            margin: 0.8rem 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+        }
+
+        .severity-list li:hover {
+            transform: translateX(10px);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .severity-icon {
+            font-size: 1.5rem;
+        }
+
+        .severity-content {
+            flex: 1;
+        }
+
+        .severity-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .severity-desc {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Tech Stack Section */
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .tech-item {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 50px;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 107, 107, 0.1));
+            border-radius: 20px;
+            padding: 3rem;
+            margin-top: 2rem;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            animation: fadeInUp 0.8s ease;
+            animation-delay: 0.9s;
+            animation-fill-mode: both;
+        }
+
+        .cta-section h3 {
+            color: #00ffff;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            margin-top: 3rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .footer p {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .cta-section {
+                padding: 2rem;
+            }
+            
+            .severity-list li {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+    </div>
+
+    <!-- Particles -->
+    <div id="particles"></div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">DDoSShield</div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/detect">Detection</a></li>
+                <li><a href="/history">History</a></li>
+                <li><a href="/about" class="active">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero">
+            <h1>About DDoS Detection System</h1>
+            <p>Next-Generation Network Security Using Advanced Rule-Based Algorithms</p>
+        </div>
+
+        <div class="card-container">
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <h3>Our Mission</h3>
+                <p>To provide real-time DDoS attack detection and prevention using intelligent rule-based algorithms that protect networks from volumetric and protocol-based attacks with 99.9% accuracy.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <h3>How It Works</h3>
+                <p>The system analyzes network traffic parameters including packet rate, byte rate, connection count, and TCP flags (SYN/ACK) to identify anomalous patterns indicative of DDoS attacks in real-time.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h3>Detection Rules</h3>
+                <p>Multiple rule categories including rate-based detection, SYN flood detection, small packet flood detection, and traffic ratio analysis to ensure comprehensive protection against all attack vectors.</p>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2><i class="fas fa-shield-alt"></i> Detection Rules Overview</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">> 1000 pkt/s</div>
+                    <div class="stat-label">Packet Rate Attack Threshold</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">> 5000 B/s</div>
+                    <div class="stat-label">Byte Rate Attack Threshold</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">> 100</div>
+                    <div class="stat-label">Connection Attack Threshold</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">SYN=1, ACK=0</div>
+                    <div class="stat-label">SYN Flood Pattern</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2><i class="fas fa-chart-line"></i> Severity Levels</h2>
+            <ul class="severity-list">
+                <li style="border-left-color: #00ff88;">
+                    <div class="severity-icon">✅</div>
+                    <div class="severity-content">
+                        <div class="severity-title">Normal</div>
+                        <div class="severity-desc">Regular traffic within safe thresholds. No action required.</div>
+                    </div>
+                </li>
+                <li style="border-left-color: #ffcc00;">
+                    <div class="severity-icon">⚠️</div>
+                    <div class="severity-content">
+                        <div class="severity-title">Warning</div>
+                        <div class="severity-desc">Elevated traffic detected. Monitor closely and prepare mitigation strategies.</div>
+                    </div>
+                </li>
+                <li style="border-left-color: #ff8800;">
+                    <div class="severity-icon">🚨</div>
+                    <div class="severity-content">
+                        <div class="severity-title">Attack</div>
+                        <div class="severity-desc">DDoS attack pattern detected. Immediate action required.</div>
+                    </div>
+                </li>
+                <li style="border-left-color: #ff4444;">
+                    <div class="severity-icon">🔥</div>
+                    <div class="severity-content">
+                        <div class="severity-title">Critical</div>
+                        <div class="severity-desc">Severe attack in progress. Emergency response needed.</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="info-section">
+            <h2><i class="fas fa-microchip"></i> Technology Stack</h2>
+            <div class="tech-stack">
+                <span class="tech-item"><i class="fab fa-python"></i> Python 3.11</span>
+                <span class="tech-item"><i class="fas fa-flask"></i> Flask</span>
+                <span class="tech-item"><i class="fas fa-robot"></i> Rule-Based Algorithm</span>
+                <span class="tech-item"><i class="fas fa-chart-line"></i> Real-time Analysis</span>
+                <span class="tech-item"><i class="fas fa-shield-alt"></i> DDoS Mitigation</span>
+                <span class="tech-item"><i class="fas fa-database"></i> History Tracking</span>
+                <span class="tech-item"><i class="fab fa-js"></i> JavaScript</span>
+                <span class="tech-item"><i class="fab fa-css3-alt"></i> CSS3 Animations</span>
+                <span class="tech-item"><i class="fas fa-chart-simple"></i> Traffic Analytics</span>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2><i class="fas fa-chart-pie"></i> Key Features</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number"><i class="fas fa-bolt"></i></div>
+                    <div class="stat-label">Real-time Detection</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number"><i class="fas fa-chart-line"></i></div>
+                    <div class="stat-label">Traffic Analysis</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number"><i class="fas fa-bell"></i></div>
+                    <div class="stat-label">Instant Alerts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number"><i class="fas fa-history"></i></div>
+                    <div class="stat-label">Attack History</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number"><i class="fas fa-chart-simple"></i></div>
+                    <div class="stat-label">Analytics Dashboard</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number"><i class="fas fa-file-alt"></i></div>
+                    <div class="stat-label">Detailed Reports</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3><i class="fas fa-rocket"></i> Ready to Protect Your Network?</h3>
+            <p>Start detecting DDoS attacks now and ensure your network security with our advanced protection system.</p>
+            <a href="/detect" class="btn btn-primary">
+                <i class="fas fa-shield-alt"></i> Start Detection Now →
+            </a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2024 DDoS Detection System | Powered by Advanced Rule-Based Algorithms | Next-Gen Network Security</p>
+    </footer>
+
+    <script>
+        // Create particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 5 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = Math.random() * 10 + 5 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Add hover effect to cards
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                card.style.transform = `translateY(-10px) scale(1.02)`;
+                card.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(0, 255, 255, 0.15), rgba(255, 255, 255, 0.05))`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = '';
+                card.style.background = '';
+            });
+        });
+
+        // Initialize
+        createParticles();
+    </script>
+</body>
+</html>

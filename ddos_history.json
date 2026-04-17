@@ -1,0 +1,148 @@
+[
+  {
+    "id": 10,
+    "timestamp": "2026-04-17 17:04:18",
+    "packet_rate": 8000.0,
+    "byte_rate": 10000.0,
+    "connection_count": 500.0,
+    "syn_flag": 1,
+    "ack_flag": 0,
+    "is_attack": true,
+    "severity": "Critical",
+    "confidence": 100,
+    "reasons": [
+      "Extremely high packet rate: 8000.0 packets/sec",
+      "High byte rate: 10000.0 bytes/sec",
+      "Extremely high connection count: 500.0"
+    ]
+  },
+  {
+    "id": 9,
+    "timestamp": "2026-04-17 17:03:52",
+    "packet_rate": 600.0,
+    "byte_rate": 1200.0,
+    "connection_count": 60.0,
+    "syn_flag": 1,
+    "ack_flag": 1,
+    "is_attack": false,
+    "severity": "Normal",
+    "confidence": 26,
+    "reasons": [
+      "Elevated packet rate: 600.0 packets/sec",
+      "Elevated byte rate: 1200.0 bytes/sec",
+      "Elevated connection count: 60.0"
+    ]
+  },
+  {
+    "id": 8,
+    "timestamp": "2026-04-17 17:02:31",
+    "packet_rate": 120.0,
+    "byte_rate": 300.0,
+    "connection_count": 10.0,
+    "syn_flag": 1,
+    "ack_flag": 1,
+    "is_attack": false,
+    "severity": "Normal",
+    "confidence": 0,
+    "reasons": []
+  },
+  {
+    "id": 7,
+    "timestamp": "2026-04-17 17:01:28",
+    "packet_rate": 600.0,
+    "byte_rate": 1200.0,
+    "connection_count": 60.0,
+    "syn_flag": 1,
+    "ack_flag": 1,
+    "is_attack": false,
+    "severity": "Normal",
+    "confidence": 26,
+    "reasons": [
+      "Elevated packet rate: 600.0 packets/sec",
+      "Elevated byte rate: 1200.0 bytes/sec",
+      "Elevated connection count: 60.0"
+    ]
+  },
+  {
+    "id": 6,
+    "timestamp": "2026-04-17 17:01:15",
+    "packet_rate": 6000.0,
+    "byte_rate": 9000.0,
+    "connection_count": 300.0,
+    "syn_flag": 1,
+    "ack_flag": 0,
+    "is_attack": true,
+    "severity": "Critical",
+    "confidence": 100,
+    "reasons": [
+      "Extremely high packet rate: 6000.0 packets/sec",
+      "High byte rate: 9000.0 bytes/sec",
+      "High connection count: 300.0"
+    ]
+  },
+  {
+    "id": 5,
+    "timestamp": "2026-04-17 17:00:49",
+    "packet_rate": 120.0,
+    "byte_rate": 300.0,
+    "connection_count": 10.0,
+    "syn_flag": 1,
+    "ack_flag": 1,
+    "is_attack": false,
+    "severity": "Normal",
+    "confidence": 0,
+    "reasons": []
+  },
+  {
+    "id": 4,
+    "timestamp": "2026-04-17 16:58:10",
+    "packet_rate": 120.0,
+    "byte_rate": 300.0,
+    "connection_count": 10.0,
+    "syn_flag": 1,
+    "ack_flag": 1,
+    "is_attack": false,
+    "severity": "Normal",
+    "confidence": 0,
+    "reasons": []
+  },
+  {
+    "id": 3,
+    "timestamp": "2026-04-17 16:55:53",
+    "packet_rate": 120.0,
+    "byte_rate": 300.0,
+    "connection_count": 10.0,
+    "syn_flag": 1,
+    "ack_flag": 1,
+    "is_attack": false,
+    "severity": "Normal",
+    "confidence": 0,
+    "reasons": []
+  },
+  {
+    "id": 2,
+    "timestamp": "2026-04-17 16:53:35",
+    "packet_rate": 120.0,
+    "byte_rate": 300.0,
+    "connection_count": 10.0,
+    "syn_flag": 1,
+    "ack_flag": 1,
+    "is_attack": false,
+    "severity": "Normal",
+    "confidence": 0,
+    "reasons": []
+  },
+  {
+    "id": 1,
+    "timestamp": "2026-04-17 16:51:10",
+    "packet_rate": 120.0,
+    "byte_rate": 300.0,
+    "connection_count": 10.0,
+    "syn_flag": 1,
+    "ack_flag": 1,
+    "is_attack": false,
+    "severity": "Normal",
+    "confidence": 0,
+    "reasons": []
+  }
+]

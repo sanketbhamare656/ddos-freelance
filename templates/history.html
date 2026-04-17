@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDoS Detection | History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.1), transparent);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .bg-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+
+        .bg-circle:nth-child(2) {
+            width: 500px;
+            height: 500px;
+            bottom: -250px;
+            right: -250px;
+            animation-delay: 5s;
+        }
+
+        .bg-circle:nth-child(3) {
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            left: 50%;
+            animation-delay: 10s;
+        }
+
+        .bg-circle:nth-child(4) {
+            width: 400px;
+            height: 400px;
+            top: 20%;
+            right: -200px;
+            animation-delay: 3s;
+        }
+
+        .bg-circle:nth-child(5) {
+            width: 250px;
+            height: 250px;
+            bottom: 20%;
+            left: -125px;
+            animation-delay: 7s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(50px, 50px) scale(1.1);
+            }
+            50% {
+                transform: translate(-50px, 100px) scale(0.9);
+            }
+            75% {
+                transform: translate(100px, -50px) scale(1.05);
+            }
+        }
+
+        /* Particles */
+        .particle {
+            position: absolute;
+            background: rgba(0, 255, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFloat 10s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Navbar */
+        .navbar {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ffff, #ff6b6b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .logo::before {
+            content: '🛡️';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            background: none;
+            -webkit-text-fill-color: initial;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00ffff, #ff6b6b);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::before,
+        .nav-links a.active::before {
+            width: 80%;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(0, 255, 255, 0.1);
+            color: #00ffff;
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 5;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Page Title */
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .page-title h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #00ffff, #ff6b6b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 107, 107, 0.1));
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease;
+            animation-fill-mode: both;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #00ffff;
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ffff, #ff6b6b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+
+        /* Button Container */
+        .button-container {
+            text-align: right;
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            z-index: -1;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            color: #1a1a2e;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b, #cc0000);
+            color: white;
+        }
+
+        .btn-success:hover, .btn-danger:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Table Container */
+        .table-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            overflow-x: auto;
+            animation: fadeInUp 0.8s ease;
+            animation-delay: 0.5s;
+            animation-fill-mode: both;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        th {
+            background: rgba(0, 255, 255, 0.1);
+            color: #00ffff;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        tr {
+            transition: all 0.3s ease;
+        }
+
+        tr:hover {
+            background: rgba(0, 255, 255, 0.05);
+            transform: scale(1.01);
+        }
+
+        td {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .status-attack {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .status-normal {
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        /* Confidence Bar */
+        .confidence-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 6px;
+            width: 60px;
+            display: inline-block;
+            margin-right: 8px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        /* Severity Badge */
+        .severity-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: rgba(0, 255, 255, 0.3);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Footer */
+        .footer {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            margin-top: 3rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .footer p {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title h1 {
+                font-size: 1.8rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .button-container {
+                justify-content: center;
+            }
+            
+            th, td {
+                padding: 0.5rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+    </div>
+
+    <!-- Particles -->
+    <div id="particles"></div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">DDoSShield</div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/detect">Detection</a></li>
+                <li><a href="/history" class="active">History</a></li>
+                <li><a href="/about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-title">
+            <h1><i class="fas fa-history"></i> Detection History</h1>
+            <p>Complete audit trail of all DDoS detection events</p>
+        </div>
+        
+        <!-- Stats Summary -->
+        <div class="stats-grid" id="statsSummary">
+            <div class="stat-card">
+                <div class="stat-number" id="totalRecords">-</div>
+                <div class="stat-label"><i class="fas fa-database"></i> Total Records</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="attackRecords">-</div>
+                <div class="stat-label"><i class="fas fa-skull-crossbones"></i> Attacks Detected</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="warningRecords">-</div>
+                <div class="stat-label"><i class="fas fa-exclamation-triangle"></i> Warnings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="normalRecords">-</div>
+                <div class="stat-label"><i class="fas fa-check-circle"></i> Normal Traffic</div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button class="btn btn-success" onclick="refreshHistory()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+            <button class="btn btn-danger" onclick="clearHistory()">
+                <i class="fas fa-trash-alt"></i> Clear All History
+            </button>
+        </div>
+        
+        <div class="table-container">
+            <table id="historyTable">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-clock"></i> Time</th>
+                        <th><i class="fas fa-box"></i> Packet Rate</th>
+                        <th><i class="fas fa-database"></i> Byte Rate</th>
+                        <th><i class="fas fa-network-wired"></i> Connections</th>
+                        <th><i class="fas fa-flag"></i> SYN/ACK</th>
+                        <th><i class="fas fa-chart-line"></i> Status</th>
+                        <th><i class="fas fa-tachometer-alt"></i> Severity</th>
+                        <th><i class="fas fa-percent"></i> Confidence</th>
+                    </tr>
+                </thead>
+                <tbody id="historyBody">
+                    <tr>
+                        <td colspan="8" style="text-align: center;">
+                            <i class="fas fa-spinner fa-spin"></i> Loading history...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2024 DDoS Detection System | Powered by Advanced Rule-Based Algorithms | Complete Audit Trail</p>
+    </footer>
+
+    <script>
+        // Create particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 5 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = Math.random() * 10 + 5 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Animate number counter
+        function animateNumber(element, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const current = Math.floor(progress * (end - start) + start);
+                element.textContent = current;
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        async function loadHistory() {
+            const tbody = document.getElementById('historyBody');
+            
+            try {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center;">
+                    <i class="fas fa-spinner fa-spin"></i> Fetching history from server...
+                </td></tr>`;
+                
+                const response = await fetch('/api/history');
+                const data = await response.json();
+                
+                console.log('History data received:', data);
+                
+                const history = data.history || [];
+                
+                if (history.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <p>No detection history found. Make a detection first!</p>
+                            </td>
+                        </tr>
+                    `;
+                    animateNumber(document.getElementById('totalRecords'), 0, 0, 500);
+                    animateNumber(document.getElementById('attackRecords'), 0, 0, 500);
+                    animateNumber(document.getElementById('warningRecords'), 0, 0, 500);
+                    animateNumber(document.getElementById('normalRecords'), 0, 0, 500);
+                    return;
+                }
+                
+                // Calculate stats
+                const attacks = history.filter(h => h.is_attack).length;
+                const warnings = history.filter(h => h.severity === 'Warning').length;
+                const normal = history.filter(h => !h.is_attack && h.severity !== 'Warning').length;
+                
+                // Animate stats
+                animateNumber(document.getElementById('totalRecords'), 0, history.length, 500);
+                animateNumber(document.getElementById('attackRecords'), 0, attacks, 500);
+                animateNumber(document.getElementById('warningRecords'), 0, warnings, 500);
+                animateNumber(document.getElementById('normalRecords'), 0, normal, 500);
+                
+                // Get confidence color
+                function getConfidenceColor(confidence) {
+                    if (confidence > 70) return '#ff4444';
+                    if (confidence > 40) return '#ff8800';
+                    return '#00ff88';
+                }
+                
+                // Get severity color
+                function getSeverityColor(severity) {
+                    if (severity === 'Critical') return '#ff4444';
+                    if (severity === 'Attack') return '#ff8800';
+                    if (severity === 'Warning') return '#ffcc00';
+                    return '#00ff88';
+                }
+                
+                tbody.innerHTML = history.map(entry => `
+                    <tr>
+                        <td style="font-size: 0.85rem;">
+                            <i class="fas fa-calendar-alt"></i> ${entry.timestamp}
+                        </td>
+                        <td><strong>${entry.packet_rate}</strong> pkt/s</td>
+                        <td><strong>${entry.byte_rate}</strong> B/s</td>
+                        <td><strong>${entry.connection_count}</strong></td>
+                        <td>
+                            <span style="background: rgba(0,255,255,0.2); padding: 0.2rem 0.5rem; border-radius: 5px;">
+                                ${entry.syn_flag}/${entry.ack_flag}
+                            </span>
+                        </td>
+                        <td class="${entry.is_attack ? 'status-attack' : 'status-normal'}">
+                            ${entry.is_attack ? '<i class="fas fa-skull-crossbones"></i> ATTACK' : '<i class="fas fa-check-circle"></i> NORMAL'}
+                        </td>
+                        <td>
+                            <span class="severity-badge" style="background: ${getSeverityColor(entry.severity)}20; color: ${getSeverityColor(entry.severity)}; border: 1px solid ${getSeverityColor(entry.severity)}">
+                                ${entry.severity}
+                            </span>
+                        </td>
+                        <td>
+                            <div style="display: flex; align-items: center;">
+                                <div class="confidence-bar">
+                                    <div class="confidence-fill" style="width: ${entry.confidence}%; background: ${getConfidenceColor(entry.confidence)};"></div>
+                                </div>
+                                <span style="font-weight: bold;">${entry.confidence}%</span>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error loading history:', error);
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #ff4444;">
+                    <i class="fas fa-exclamation-triangle"></i> Error loading history: ${error.message}
+                </td></tr>`;
+            }
+        }
+        
+        async function clearHistory() {
+            if (confirm('⚠️ Are you sure you want to clear all detection history? This action cannot be undone!')) {
+                try {
+                    const response = await fetch('/api/clear_history', { method: 'POST' });
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Show success notification
+                        const btn = document.querySelector('.btn-danger');
+                        const originalText = btn.innerHTML;
+                        btn.innerHTML = '<i class="fas fa-check"></i> Cleared!';
+                        setTimeout(() => {
+                            btn.innerHTML = originalText;
+                        }, 2000);
+                        
+                        await loadHistory();
+                    } else {
+                        alert('❌ Failed to clear history: ' + result.message);
+                    }
+                } catch (error) {
+                    alert('Error clearing history: ' + error.message);
+                }
+            }
+        }
+        
+        function refreshHistory() {
+            const btn = document.querySelector('.btn-success');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+            loadHistory().then(() => {
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 500);
+            });
+        }
+        
+        // Add hover effect to stat cards
+        document.querySelectorAll('.stat-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(0, 255, 255, 0.2), rgba(255, 107, 107, 0.1))`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.background = '';
+            });
+        });
+        
+        // Initialize
+        createParticles();
+        loadHistory();
+        
+        // Auto-refresh every 10 seconds
+        setInterval(loadHistory, 10000);
+    </script>
+</body>
+</html>
